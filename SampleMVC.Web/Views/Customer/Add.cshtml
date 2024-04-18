@@ -1,0 +1,74 @@
+﻿@model AddNewCustomerRequest
+
+<div class="container py-5">
+    <h1>Add new customer</h1>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <form method="post">
+            @if(ViewBag.Error != null)
+            {
+                <h4 class="text-danger">@ViewBag.Error</h4>
+            }
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstName" name="FirstName" />                
+            </div>
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastName" name="LastName" />                
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" name="Email">                    
+            </div>            
+            <div class="mb-3">
+                <label asp-for="Phone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="phone" name="Phone">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="DateOfBirth">Date of Birth</label>
+                <input type="date" class="form-control" id="dateOfBirth" name="DateOfBirth" />                
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="Genders">Gender</label>
+                <select asp-items="Model.Genders" class="form-select form-control">
+                    <option></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label mb-3" asp-for="ProfilePicture">Upload Photo</label>
+                <input type="file" class="form-control" id="profilePicture" name="ProfilePicture" />
+            </div>
+            <div class="mb-3" style="display:none">
+                <img src="" class="form-control" id="profilePic" />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        var photo = document.getElementById('profilePic');
+        async function uploadImage(e) {
+            let file = e.target.files[0];
+            let fileToUpload = new FormData();
+            fileToUpload.append('file', file);
+            console.log('file - ', fileToUpload);
+            await fetch('/api/Image/Upload', {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*'                    
+                },                                
+                body: fileToUpload,
+            }).then(response => response.text())
+                .then(error => { 
+                    debugger;
+                    console.log('output', error);
+                })
+        }
+
+        var img = document.getElementById('profilePicture').addEventListener('change', uploadImage);                              
+    </script>
+}
