@@ -37,9 +37,9 @@ namespace SampleMVC.Repository
                                    .Crop("fill"))
                                    .BuildUrl(file.FileName);
 
-            if (uploadResult is not null && uploadResult.Status == HttpStatusCode.OK.ToString())
+            if (uploadResult is not null && uploadResult.Status == HttpStatusCode.OK)
             {
-                return uploadResult.SecureUri.ToString();
+                return uploadResult.SecureUrl.ToString();
             }
 
             return string.Empty;

@@ -52,11 +52,11 @@
     <script>
         var photo = document.getElementById('profilePic');
         async function uploadImage(e) {
-            let file = e.target.files[0];
+            //let file = e.target.files[0];
             let fileToUpload = new FormData();
-            fileToUpload.append('file', file);
+            fileToUpload.append('fileToUpload', e.target.files[0]);
             console.log('file - ', fileToUpload);
-            await fetch('/api/Image/Upload', {
+            await fetch('/api/image', {
                 method: 'POST',
                 headers: {
                     'Accept': '*/*'                    
