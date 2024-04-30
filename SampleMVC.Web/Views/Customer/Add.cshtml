@@ -11,17 +11,21 @@
             {
                 <h4 class="text-danger">@ViewBag.Error</h4>
             }
+            
             <div class="mb-3">
                 <label asp-for="FirstName" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="firstName" name="FirstName" />                
+                <input type="text" class="form-control" id="firstName" name="FirstName" />       
+                <span class="text-danger" asp-validation-for="FirstName"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="LastName" class="form-label">Last Name</label>
                 <input type="text" class="form-control" id="lastName" name="LastName" />                
+                <span class="text-danger" asp-validation-for="LastName"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Email" class="form-label">Email Address</label>
                 <input type="email" class="form-control" id="email" name="Email">                    
+                <span class="text-danger" asp-validation-for="Email"></span>
             </div>            
             <div class="mb-3">
                 <label asp-for="Phone" class="form-label">Phone</label>
@@ -33,42 +37,81 @@
             </div>
             <div class="mb-3">
                 <label class="form-label" asp-for="Genders">Gender</label>
-                <select asp-items="Model.Genders" class="form-select form-control">
+                <input type="hidden" name="SelectedGender" asp-for="SelectedGender" id="hdnSelectedGender" />
+                <select asp-items="Model?.Genders" class="form-select form-control" id="selGender">
                     <option></option>
                 </select>
             </div>
             <div class="mb-3">
                 <label class="form-label mb-3" asp-for="ProfilePicture">Upload Photo</label>
                 <input type="file" class="form-control" id="profilePicture" name="ProfilePicture" />
+                <span class="text-danger" asp-validation-for="ProfilePicture"></span>
             </div>
-            <div class="mb-3" style="display:none">
-                <img src="" class="form-control" id="profilePic" />
+            <div class="mb-3">
+                <input type="hidden" name="UploadedPhotoUrl" asp-for="UploadedPhotoUrl" id="hdnUploadUrl" />
+                <img class="d-none" id="profilePic" />
+                <img class="d-none" id="loader" />
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" asp-action="Add" asp-controller="Customer" class="btn btn-primary">Submit</button>
         </form>
     </div>
 </div>
+
 @section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script>
         var photo = document.getElementById('profilePic');
-        async function uploadImage(e) {
-            //let file = e.target.files[0];
+        var loaderImage = document.getElementById('loader');
+        var hdnUrl = document.getElementById('hdnUploadUrl');
+
+        async function uploadImage(e) {        
+            
+            loaderImage.src = '../images/loader.gif';
+            
+            //shows image upload progress
+            showLoader();
+            
             let fileToUpload = new FormData();
             fileToUpload.append('fileToUpload', e.target.files[0]);
-            console.log('file - ', fileToUpload);
+            
             await fetch('/api/image', {
                 method: 'POST',
                 headers: {
-                    'Accept': '*/*'                    
-                },                                
+                    'Accept': '*/*'
+                },
                 body: fileToUpload,
             }).then(response => response.text())
-                .then(error => { 
-                    debugger;
-                    console.log('output', error);
-                })
+                .then(data => {                                        
+                    var parsedObj = JSON.parse(data);
+                    photo.src = parsedObj.url;
+                    hdnUrl.value = parsedObj.url;
+                    photo.classList.remove('d-none');                    
+                    photo.classList.add('d-block');                                        
+                });
+             
+            hideLoader();                                
         }
 
         var img = document.getElementById('profilePicture').addEventListener('change', uploadImage);                              
+
+        function showLoader() {
+            loaderImage.classList.remove('d-none');
+            loaderImage.classList.add('d-block');
+        }
+
+        function hideLoader() {
+            loaderImage.classList = "";
+            loaderImage.classList.add('d-none');
+        }
+
+        function selectGender(e) {
+            debugger;
+            var hdnSelectedGender = document.getElementById('hdnSelectedGender');
+            hdnSelectedGender.value = e.target.value;
+        }
+
+        document.getElementById('selGender').addEventListener('change', selectGender);;
+
     </script>
 }

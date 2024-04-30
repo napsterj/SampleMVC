@@ -59,6 +59,7 @@ namespace SampleMVC.Web.Controllers
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("Error","Something is wrong with the input data");
+                return View(newCustomerRequest);
             }
 
             //Check if the customer entered an existing customer name by mistake
@@ -70,6 +71,7 @@ namespace SampleMVC.Web.Controllers
                 return View(newCustomerRequest);
             }
             
+            var uploadUrl = Request.Form["UploadedPhotoUrl"].ToString();
             var customer = new Customer
             {
                   FirstName = newCustomerRequest.FirstName,
@@ -78,7 +80,7 @@ namespace SampleMVC.Web.Controllers
                   Phone =   newCustomerRequest.Phone,
                   DateOfBirth = newCustomerRequest.DateOfBirth,
                   Gender = newCustomerRequest.SelectedGender,              
-                  UploadedPhotoUrl =  newCustomerRequest.UploadedPhotoUrl
+                  UploadedPhotoUrl = newCustomerRequest.UploadedPhotoUrl
             };
 
             return RedirectToAction("List");

@@ -19,4 +19,8 @@
     <ProjectReference Include="..\SampleMVC.Service\SampleMVC.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
